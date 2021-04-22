@@ -1,0 +1,25 @@
+class Main {
+  function void main()
+{
+    var Board board;
+    var int location;
+    var boolean x;
+    var boolean won;
+    var int key;
+    
+    let board = Board.new();
+
+    do Output.printString("move the target using the arrows then press enter to play");
+
+    let x = false;
+    let won = false;
+    while(~won)
+    {
+      do board.selectSquare(x);
+      let won = board.checkWinner();
+      let x = ~x;
+    }
+    return;
+  }
+
+}

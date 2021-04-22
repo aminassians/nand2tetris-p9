@@ -1,0 +1,230 @@
+class Board 
+{
+  field Array cube;
+  static Array placeX;
+  static Array placeY;
+
+  
+  constructor Board new()
+  {
+    let placeX = Array.new(9);
+    let placeY = Array.new(9);
+
+    let placeX[0] = 180;
+    let placeX[1] = 244;
+    let placeX[2] = 308;
+    let placeX[3] = 180;
+    let placeX[4] = 244;
+    let placeX[5] = 308;
+    let placeX[6] = 180;
+    let placeX[7] = 244;
+    let placeX[8] = 308;
+
+    let placeY[0] = 52;
+    let placeY[1] = 52;
+    let placeY[2] = 52;
+    let placeY[3] = 116;
+    let placeY[4] = 116;
+    let placeY[5] = 116;
+    let placeY[6] = 180;
+    let placeY[7] = 180;
+    let placeY[8] = 180;
+
+    let cube = Array.new(9);
+
+    do gameBoard();
+    return this;
+  }
+
+  method int selectSquare(boolean x)
+  {  
+    var int select;
+    var int key;
+    let select = 4;
+    do drawSquare(select);
+    
+    while(true)
+    {
+      let key = Keyboard.keyPressed();
+      if(key = 132){ 
+        do clearSquare(select);
+        let select = updateSquare(select + 1);
+        do drawSquare(select);
+      }
+      if(key = 130)
+      { 
+        do clearSquare(select);
+        let select = updateSquare(select - 1);
+        do drawSquare(select);
+      }
+      if(key = 131)
+      { 
+        do clearSquare(select);
+        let select = updateSquare(select - 3);
+        do drawSquare(select);
+      }
+      if(key = 133)
+      { 
+        do clearSquare(select);
+        let select = updateSquare(select + 3);
+        do drawSquare(select);
+      }
+      if(key = 128)
+      { 
+        do clearSquare(select);
+        if(checkAvailable(select))
+        {
+          do xOr0(select, x);
+          return select;
+        }
+        else
+        {
+          do drawSquare(select);
+        }
+      }
+    }
+    return 4;
+  }
+
+  method boolean checkAvailable(int location)
+  {
+    if(~(cube[location] = -1) & ~(cube[location] = 1))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  method void xOr0(int location, boolean x){
+    if(x)
+    {
+      let cube[location] = 1;
+    }
+    else
+    {
+      let cube[location] = -1;
+    }
+
+    do drawxOr0(location, x);
+    return;
+  }
+
+  method void gameBoard()
+  {
+
+    do Screen.drawLine(222, 10, 222, 222);
+    do Screen.drawLine(266, 10, 266, 222);
+    do Screen.drawLine(138, 80, 330, 80);
+    do Screen.drawLine(138, 138, 330, 138);
+    return;
+  }
+
+  method void drawO(int x, int y)
+  {
+    do Screen.drawCircle(x, y, 15);
+    do Screen.setColor(false);
+    return;
+  }
+
+  method void drawX(int x, int y)
+  {
+    do Screen.drawLine(x - 10, y + 10, x + 10, y - 10);
+    do Screen.drawLine(x + 10, y + 10, x - 10, y - 10);
+    return;
+  }
+
+  method void clearSquare(int location)
+  {
+    let location = updateSquare(location);
+    do Screen.setColor(false);
+    do drawSquare(location);
+    do Screen.setColor(true);
+    return; 
+  }
+
+  method void drawSquare(int location)
+  {
+    var int x, y;
+    let location = updateSquare(location);
+    let x = placeX[location];
+    let y = placeY[location];
+    
+    do Screen.drawLine(x - 16, y + 16, x - 16, y - 16);
+    do Screen.drawLine(x - 16, y + 16, x + 16, y + 16);
+    do Screen.drawLine(x + 16, y + 16, x + 16, y - 16);
+    do Screen.drawLine(x + 16, y - 16, x - 16, y - 16);
+
+    return; 
+  }
+
+  method void drawxOr0(int location, boolean x)
+  {
+    var int x1;
+    var int y1;
+    let location = updateSquare(location);
+    let x1 = placeX[location];
+    let y1 = placeY[location];
+    
+    if(x)
+    {
+      do drawO(x1, y1);
+    }
+    else
+    {
+      do drawX(x1, y1);
+    }
+    return;
+  }
+
+  method int updateSquare(int location){
+    
+    if((location > -1) & (location < 9))
+    {
+      return location;
+    }
+    if(location < 0)
+    {
+      return 0;
+    }
+    if(location > 8)
+    {
+      return 8;
+    }
+    return 0;
+  }
+
+  method boolean checkWinner()
+  {
+    if((win(cube[0], cube[1], cube[2])) |
+        (win(cube[3], cube[4], cube[5])) |
+        (win(cube[6], cube[7], cube[8])) |
+        (win(cube[0], cube[3], cube[6])) |
+        (win(cube[1], cube[4], cube[7])) |
+        (win(cube[2], cube[5], cube[8])) |
+        (win(cube[0], cube[4], cube[8])) |
+        (win(cube[2], cube[4], cube[6])))
+        {
+      return true;
+    }
+    return false;
+  }
+
+
+  method boolean win(int x, int y, int z)
+  {
+    if((x = 0) | (y = 0) | (z = 0))
+    {
+      return false;
+    }
+    if((x = y) & (y = z))
+    {
+      do Output.println();
+      do Output.printString("You Won!");
+      return true;
+    }
+    return false;
+  }
+}
